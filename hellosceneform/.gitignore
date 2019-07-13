@@ -1,4 +1,6 @@
 # Android Studio configuration.
+sampledata
+*.sfb
 *.iml
 .idea/
 #

@@ -60,3 +60,12 @@ sceneform.asset('sampledata/models/andy.obj',
         'sampledata/models/andy.sfa',
         'src/main/res/raw/andy')
 
+sceneform.asset('sampledata/models/gfp.obj',
+        'default',
+        'sampledata/models/gfp.sfa',
+        'src/main/res/raw/gfp')
+
+sceneform.asset('sampledata/models/export2.gltf',
+        'default',
+        'sampledata/models/export2.sfa',
+        'src/main/res/raw/export2')
