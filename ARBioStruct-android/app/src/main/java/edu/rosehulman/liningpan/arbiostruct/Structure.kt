@@ -6,6 +6,7 @@ import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.ServerTimestamp
 
 data class Structure(var pdbID: String = "",
+                     var modelUrl: String = "",
                      var status:String = "") {
     @get:Exclude var id:String = ""
     @ServerTimestamp

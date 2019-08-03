@@ -20,4 +20,11 @@
     <string name="login">Login</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_add_edit_structure">AddEditStructureActivity</string>
+
+    <string name="title_activity_add">Add a structure</string>
+    <string name="title_activity_edit">Edit a structure</string>
+    <string name="name">Name</string>
+    <string name="pdb_id">PDB ID</string>
+    <string name="description">Description</string>
+    <string name="done">Done</string>
 </resources>

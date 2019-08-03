@@ -11,6 +11,10 @@ class ProteinCardViewHolder(itemView : View, adapter: ProteinListAdapter) : Recy
         itemView.setOnClickListener{
             adapter.listItemSelected(adapterPosition)
         }
+        itemView.setOnLongClickListener {
+            adapter.editItemSelected(adapterPosition)
+            true
+        }
     }
 
     fun bind(protein:Protein){

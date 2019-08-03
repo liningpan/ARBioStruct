@@ -16,9 +16,14 @@ import android.view.Menu
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.nav_header_main.*
+import kotlinx.android.synthetic.main.nav_header_main.view.*
 
 const val RC_SIGN_IN = 1
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+const val ADD_PRO_INFO = 2
+const val EDIT_PRO_INFO = 3
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, ProteinListFragment.OnProteinItemSelectedListener {
     private val auth = FirebaseAuth.getInstance()
     lateinit var authListener : FirebaseAuth.AuthStateListener
 
@@ -61,13 +66,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if(user == null){
                 switchToAuthUI()
             } else {
-
+                val navView: NavigationView = findViewById(R.id.nav_view)
+                val header_view = navView.getHeaderView(0)
+                header_view.user_name_text_view.text = user.displayName
+                header_view.user_email_text_view.text = user.email
+                switchToProteinListFragment()
             }
         }
     }
 
     override fun onBackPressed() {
-        val drawerLayout: androidx.drawerlayout.widget.DrawerLayout = findViewById(R.id.drawer_layout)
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
         } else {
@@ -113,7 +122,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
         }
-        val drawerLayout: androidx.drawerlayout.widget.DrawerLayout = findViewById(R.id.drawer_layout)
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
@@ -134,6 +143,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             RC_SIGN_IN)
     }
 
+    private fun switchToProteinListFragment(){
+        val ft = supportFragmentManager.beginTransaction()
+        val fragment = ProteinListFragment()
+        ft.replace(R.id.frag_container, fragment)
+        ft.commit()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -141,12 +157,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val response = IdpResponse.fromResultIntent(data)
 
             if (resultCode == Activity.RESULT_OK) {
-                // Successfully signed in
-                val user = FirebaseAuth.getInstance().currentUser
-                // ...
+                val user = FirebaseAuth.getInstance().currentUser!!
+
             } else {
                 switchToAuthUI()
             }
         }
+    }
+
+    override fun onProteinItemSelected(protein: Protein) {
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

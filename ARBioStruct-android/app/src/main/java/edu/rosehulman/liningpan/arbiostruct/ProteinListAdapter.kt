@@ -8,7 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 
-class ProteinListAdapter(var context:Context?, var listener: ProteinListFragment.OnProteinItemSelectedListener?): RecyclerView.Adapter<ProteinCardViewHolder>() {
+class ProteinListAdapter(var context:Context?,
+                         var listener: ProteinListFragment.OnProteinItemSelectedListener?,
+                         var fragment: ProteinListFragment
+): RecyclerView.Adapter<ProteinCardViewHolder>() {
     var proteins = ArrayList<Protein>()
     var proteinRef = FirebaseFirestore
         .getInstance()
@@ -50,9 +53,8 @@ class ProteinListAdapter(var context:Context?, var listener: ProteinListFragment
             }
         }
     }
-    fun addEditDialog(pos:Int = -1){
 
-    }
+
     /**
      * Called when RecyclerView needs a new [ViewHolder] of the given type to represent
      * an item.
@@ -116,6 +118,18 @@ class ProteinListAdapter(var context:Context?, var listener: ProteinListFragment
 
     fun listItemSelected(pos:Int){
         listener?.onProteinItemSelected(proteins[pos])
+    }
+
+    fun editItemSelected(pos:Int){
+        fragment.startAddEditActivity(proteins[pos])
+    }
+
+    fun addProtein(protein:Protein){
+        proteinRef.add(protein)
+    }
+
+    fun editProtein(protein: Protein){
+        proteinRef.document(protein.id).set(protein)
     }
 
 
