@@ -27,4 +27,12 @@
     <string name="pdb_id">PDB ID</string>
     <string name="description">Description</string>
     <string name="done">Done</string>
+    <string name="sign_out">Sign out</string>
+    <string name="title_activity_protein_detail">ProteinDetailActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_info">Information</string>
+    <string name="title_seq">Sequence</string>
+    <string name="title_structure">Structure</string>
 </resources>

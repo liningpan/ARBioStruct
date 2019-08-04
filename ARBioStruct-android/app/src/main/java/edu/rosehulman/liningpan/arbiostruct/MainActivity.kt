@@ -16,6 +16,7 @@ import android.view.Menu
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
@@ -70,6 +71,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val header_view = navView.getHeaderView(0)
                 header_view.user_name_text_view.text = user.displayName
                 header_view.user_email_text_view.text = user.email
+                if(user.photoUrl != null){
+                    Picasso.get().load(user.photoUrl).into(header_view.user_image_view)
+                }
                 switchToProteinListFragment()
             }
         }
@@ -103,23 +107,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_home -> {
-                // Handle the camera action
-            }
-            R.id.nav_gallery -> {
-
-            }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_tools -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
+            R.id.action_signout->{
+                auth.signOut()
             }
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
@@ -138,7 +127,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(providers)
-                .setTheme(R.style.MyTheme)
+                .setTheme(R.style.LoginTheme)
                 .build(),
             RC_SIGN_IN)
     }

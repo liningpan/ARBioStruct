@@ -10,10 +10,13 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <activity
+                android:name=".ProteinDetailActivity"
+                android:label="@string/title_activity_protein_detail">
+        </activity>
+        <activity
                 android:name=".AddEditStructureActivity"
                 android:label="@string/title_activity_add_edit_structure"
                 android:theme="@style/AppTheme.NoActionBar">
-
         </activity>
         <activity
                 android:name=".MainActivity"
@@ -24,7 +27,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-
         </activity>
     </application>
 
