@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.ServerTimestamp
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -17,9 +18,11 @@ data class Protein(
     var ownByUser: String = ""
 ) : Parcelable {
 
+    @IgnoredOnParcel
     @get:Exclude
     var id = ""
 
+    @IgnoredOnParcel
     @ServerTimestamp
     var lastTouched: Timestamp? = null
 
@@ -47,15 +50,25 @@ data class Protein(
             ownByUser = intent?.getStringExtra(PROTEIN_UID_MESSAGE) ?: FirebaseAuth.getInstance().uid!!
         }
     }
-    fun putIntent(intent: Intent){
+
+    fun putIntent(intent: Intent) {
         intent.putExtra(PROTEIN_NAME_MESSAGE, name)
         intent.putExtra(PROTEIN_PDBID_MESSAGE, pdbID)
         intent.putExtra(PROTEIN_DESCRIPTION_MESSAGE, description)
         intent.putExtra(PROTEIN_ID_MESSAGE, id)
-        if(ownByUser == ""){
+        if (ownByUser == "") {
             intent.putExtra(PROTEIN_UID_MESSAGE, FirebaseAuth.getInstance().uid!!)
         } else {
             intent.putExtra(PROTEIN_UID_MESSAGE, ownByUser)
         }
     }
+
+    @Exclude
+    fun getPDBFile() = "/pdbfile/${pdbID}.pdb"
+
+    @Exclude
+    fun getFASTAFile() = "/FASTA/${pdbID}.fasta"
+
+    @Exclude
+    fun getglTFFile() = "/glTF/${pdbID}.gltf"
 }

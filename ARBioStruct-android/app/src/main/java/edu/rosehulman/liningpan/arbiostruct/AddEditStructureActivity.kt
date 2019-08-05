@@ -6,9 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_add_edit_structure.*
 import kotlinx.android.synthetic.main.content_add_edit_structure.*
 
@@ -22,9 +20,9 @@ class AddEditStructureActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_edit_structure)
         setSupportActionBar(toolbar)
 
-        isEdit = intent.getBooleanExtra(Protein.IS_EDIT_MESSAGE,false)
+        isEdit = intent.getBooleanExtra(Protein.IS_EDIT_MESSAGE, false)
 
-        if(isEdit) {
+        if (isEdit) {
             protein = Protein.fromIntent(intent)
         }
 
@@ -32,8 +30,8 @@ class AddEditStructureActivity : AppCompatActivity() {
 
     }
 
-    private fun updateUI(){
-        if(isEdit){
+    private fun updateUI() {
+        if (isEdit) {
             toolbar.title = getString(R.string.title_activity_edit)
         } else {
             toolbar.title = getString(R.string.title_activity_add)
@@ -49,20 +47,19 @@ class AddEditStructureActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
+        return when (item.itemId) {
             R.id.action_protein_edit_done -> {
 
                 protein.name = protein_name_edit_text.text.toString()
                 protein.pdbID = protein_pdbid_edit_text.text.toString()
                 protein.description = protein_description_edit_text.text.toString()
 
-                if(protein.name == "" || protein.pdbID == ""){
+                if (protein.name == "" || protein.pdbID == "") {
                     val builder = AlertDialog.Builder(this)
                     builder.setMessage("Name and PDB ID cannot be empty")
                     builder.setNegativeButton(android.R.string.ok, null)
                     builder.create().show()
-                }
-                else {
+                } else {
                     val resultIntent = Intent(this, MainActivity::class.java)
 
                     resultIntent.putExtra(Protein.IS_EDIT_MESSAGE, isEdit)

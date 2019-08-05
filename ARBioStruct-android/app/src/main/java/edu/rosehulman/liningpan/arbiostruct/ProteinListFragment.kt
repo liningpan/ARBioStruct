@@ -4,18 +4,17 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.fragment_protein_list.*
 import kotlinx.android.synthetic.main.fragment_protein_list.view.*
 
 class ProteinListFragment : Fragment() {
     private var listener: OnProteinItemSelectedListener? = null
-    lateinit var adapter:ProteinListAdapter
+    lateinit var adapter: ProteinListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,11 +23,11 @@ class ProteinListFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_protein_list, container, false)
         adapter = ProteinListAdapter(context, listener, this)
-        val recyclerView:RecyclerView = view.protein_recycler_view
+        val recyclerView: RecyclerView = view.protein_recycler_view
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
-        view.fab.setOnClickListener{
+        view.fab.setOnClickListener {
             startAddEditActivity(null)
         }
         return view
@@ -49,9 +48,9 @@ class ProteinListFragment : Fragment() {
         listener = null
     }
 
-    fun startAddEditActivity(protein: Protein?){
+    fun startAddEditActivity(protein: Protein?) {
         val addEditIntent = Intent(context, AddEditStructureActivity::class.java)
-        if(protein == null){
+        if (protein == null) {
             addEditIntent.putExtra(Protein.IS_EDIT_MESSAGE, false)
             startActivityForResult(addEditIntent, ADD_PRO_INFO)
         } else {
@@ -63,9 +62,9 @@ class ProteinListFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == ADD_PRO_INFO && resultCode == Activity.RESULT_OK){
+        if (requestCode == ADD_PRO_INFO && resultCode == Activity.RESULT_OK) {
             adapter.addProtein(Protein.fromIntent(data))
-        } else if(requestCode == EDIT_PRO_INFO && resultCode == Activity.RESULT_OK){
+        } else if (requestCode == EDIT_PRO_INFO && resultCode == Activity.RESULT_OK) {
             adapter.editProtein(Protein.fromIntent(data))
         }
 
@@ -84,7 +83,7 @@ class ProteinListFragment : Fragment() {
      */
     interface OnProteinItemSelectedListener {
 
-        fun onProteinItemSelected(protein:Protein)
+        fun onProteinItemSelected(protein: Protein)
     }
 
 }

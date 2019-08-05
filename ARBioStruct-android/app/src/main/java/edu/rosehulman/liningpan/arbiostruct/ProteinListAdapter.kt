@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 
-class ProteinListAdapter(var context:Context?,
-                         var listener: ProteinListFragment.OnProteinItemSelectedListener?,
-                         var fragment: ProteinListFragment
-): RecyclerView.Adapter<ProteinCardViewHolder>() {
+class ProteinListAdapter(
+    var context: Context?,
+    var listener: ProteinListFragment.OnProteinItemSelectedListener?,
+    var fragment: ProteinListFragment
+) : RecyclerView.Adapter<ProteinCardViewHolder>() {
     var proteins = ArrayList<Protein>()
     var proteinRef = FirebaseFirestore
         .getInstance()
@@ -23,7 +24,7 @@ class ProteinListAdapter(var context:Context?,
             .whereEqualTo(Protein.OWN_BY_USER, FirebaseAuth.getInstance().uid)
             .orderBy(Protein.LAST_TOUCHED_KEY, Query.Direction.ASCENDING)
             .addSnapshotListener { querySnapshot, exception ->
-                if(exception != null){
+                if (exception != null) {
                     Log.d(Constant.TAG, exception.toString())
                     return@addSnapshotListener
                 } else {
@@ -32,10 +33,11 @@ class ProteinListAdapter(var context:Context?,
 
             }
     }
-    private fun processSnapshotChanges(querySnapshot: QuerySnapshot){
-        for(documentSnapshot in querySnapshot.documentChanges){
+
+    private fun processSnapshotChanges(querySnapshot: QuerySnapshot) {
+        for (documentSnapshot in querySnapshot.documentChanges) {
             val protein = Protein.fromSnapshot(documentSnapshot.document)
-            when(documentSnapshot.type){
+            when (documentSnapshot.type) {
                 DocumentChange.Type.ADDED -> {
                     proteins.add(0, protein)
                     notifyItemInserted(0)
@@ -116,19 +118,19 @@ class ProteinListAdapter(var context:Context?,
         holder.bind(proteins[position])
     }
 
-    fun listItemSelected(pos:Int){
+    fun listItemSelected(pos: Int) {
         listener?.onProteinItemSelected(proteins[pos])
     }
 
-    fun editItemSelected(pos:Int){
+    fun editItemSelected(pos: Int) {
         fragment.startAddEditActivity(proteins[pos])
     }
 
-    fun addProtein(protein:Protein){
+    fun addProtein(protein: Protein) {
         proteinRef.add(protein)
     }
 
-    fun editProtein(protein: Protein){
+    fun editProtein(protein: Protein) {
         proteinRef.document(protein.id).set(protein)
     }
 
