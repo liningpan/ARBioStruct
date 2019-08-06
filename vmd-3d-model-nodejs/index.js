@@ -38,6 +38,7 @@ let proteinObserver = proteinQuery.onSnapshot(querySnapshot => {
     console.log(`Received query snapshot of size ${querySnapshot.size}`);
     querySnapshot.docChanges().forEach(change => {
         if (change.type === 'added') {
+            console.log(change.doc.data())
             let pdbID = change.doc.data()['pdbID']
             modelQuery.doc(pdbID).get().then(documentSnapshot => {
                 if (documentSnapshot.exists) {
@@ -61,7 +62,7 @@ function upload(doc, cb){
             expires: '03-09-2491'
         }).then(signedUrls => {
             modelQuery.doc(doc.id).update({status:"ready", modelUrl:signedUrls[0]})
-            console("PDB ID:", doc.id, "ready")
+            console.log("PDB ID:", doc.id, "ready")
             // signedUrls[0] contains the file's public URL
         });
     });
