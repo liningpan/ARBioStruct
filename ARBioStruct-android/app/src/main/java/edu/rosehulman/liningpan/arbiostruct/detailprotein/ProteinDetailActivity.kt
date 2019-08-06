@@ -1,6 +1,7 @@
 package edu.rosehulman.liningpan.arbiostruct.detailprotein
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,10 +18,9 @@ import edu.rosehulman.liningpan.arbiostruct.ProteinModel
 import edu.rosehulman.liningpan.arbiostruct.R
 import kotlinx.android.synthetic.main.activity_add_edit_structure.*
 import kotlinx.android.synthetic.main.download_dialog.view.*
-import kotlinx.android.synthetic.main.nav_header_main.*
 import java.io.File
 
-class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragment.OnSwitchToARClickedListener{
+class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragment.OnSwitchToARClickedListener {
 
     private var modelRef = FirebaseFirestore
         .getInstance()
@@ -36,7 +36,7 @@ class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragmen
             }
             R.id.navigation_sequence -> {
                 val fastaFile = File(this.getExternalFilesDir(null), protein.getFASTAFile())
-                if(fastaFile.exists()){
+                if (fastaFile.exists()) {
                     fragment = ProteinDetailSequenceFragment.newInstance(protein)
                 } else {
                     downloadAndSwitchToSequence()
@@ -44,14 +44,14 @@ class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragmen
             }
             R.id.navigation_structure -> {
                 val pdbFile = File(this.getExternalFilesDir(null), protein.getPDBFile())
-                if(pdbFile.exists()){
+                if (pdbFile.exists()) {
                     fragment = ProteinDetailStructureFragment.newInstance(protein)
                 } else {
                     downloadAndSwitchToStructure()
                 }
             }
         }
-        if(fragment != null){
+        if (fragment != null) {
             val ft = supportFragmentManager.beginTransaction()
             ft.replace(R.id.protein_detail_frag_container, fragment)
             ft.commit()
@@ -61,42 +61,43 @@ class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragmen
 
     override fun onSwitchToARClicked() {
         val modelFile = File(this.getExternalFilesDir(null), protein.getglTFFile())
-        if(modelFile.exists()){
-            val ft = supportFragmentManager.beginTransaction()
-            ft.replace(R.id.protein_detail_frag_container, ProteinDetailARFragment.newInstance(protein))
-            ft.commit()
+        if (modelFile.exists()) {
+            switchToArActivity()
         } else {
             modelRef
-                .whereEqualTo(ProteinModel.PDBID_KEY, protein.pdbID)
+                .document(protein.pdbID)
                 .get()
-                .addOnSuccessListener {querySnapshot ->
-                    if(querySnapshot.isEmpty){
-                        AlertDialog.Builder(this)
-                            .setTitle("Sorry")
-                            .setMessage("This structure hasn't been processed by server")
-                            .create()
-                            .show()
-                    }
-                    for(documentSnapshot in querySnapshot.documents){
-                        val model = ProteinModel.fromSnapshot(documentSnapshot)
-                        when(model.status){
-                            ProteinModel.STATUS_NEW, ProteinModel.STATUS_RENDERING, ProteinModel.STATUS_UPLOADING -> {
-                                AlertDialog.Builder(this)
-                                    .setTitle("Sorry")
-                                    .setMessage("This structure is not ready")
-                                    .create()
-                                    .show()
-                            }
-                            ProteinModel.STATUS_READY -> {
-                                downloadAndSwitchToAR(model)
-                            }
-                            else -> {
-                                Log.w(Constant.TAG, "Wrong status ${model.status}")
-                            }
+                .addOnSuccessListener {documentSnapshot ->
+                    val model = ProteinModel.fromSnapshot(documentSnapshot)
+                    when (model.status) {
+                        ProteinModel.STATUS_NEW, ProteinModel.STATUS_RENDERING, ProteinModel.STATUS_UPLOADING -> {
+                            AlertDialog.Builder(this)
+                                .setTitle("Sorry")
+                                .setMessage("This structure is not ready")
+                                .create()
+                                .show()
+                        }
+                        ProteinModel.STATUS_READY -> {
+                            downloadAndSwitchToAR(model)
+                        }
+                        else -> {
+                            Log.w(Constant.TAG, "Wrong status ${model.status}")
                         }
                     }
-            }
+                }.addOnFailureListener {
+                    AlertDialog.Builder(this)
+                        .setTitle("Sorry")
+                        .setMessage("This structure hasn't been processed by server")
+                        .create()
+                        .show()
+                }
         }
+    }
+
+    private fun switchToArActivity(){
+        val arIntent = Intent(this, ProteinArActivity::class.java)
+        protein.putIntent(arIntent)
+        startActivity(arIntent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,7 +105,7 @@ class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragmen
         setContentView(R.layout.activity_protein_detail)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         protein = Protein.fromIntent(intent)
-        if(protein.name == ""){
+        if (protein.name == "") {
             finish()
         }
         setSupportActionBar(toolbar)
@@ -112,7 +113,7 @@ class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragmen
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = protein.name
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             val ft = supportFragmentManager.beginTransaction()
             ft.replace(R.id.protein_detail_frag_container, ProteinDetailInformationFragment.newInstance(protein))
             ft.commit()
@@ -120,10 +121,10 @@ class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragmen
     }
 
 
-    fun downloadAndSwitchToInfo(){
+    fun downloadAndSwitchToInfo() {
         val reqId = ProteinInfoService.fetchSequence(this, protein)
-        launchDownloadDialog(reqId){ success ->
-            if(success){
+        launchDownloadDialog(reqId) { success ->
+            if (success) {
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.protein_detail_frag_container, ProteinDetailSequenceFragment.newInstance(protein))
                 ft.commit()
@@ -131,10 +132,10 @@ class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragmen
         }
     }
 
-    fun downloadAndSwitchToSequence(){
+    fun downloadAndSwitchToSequence() {
         val reqId = ProteinInfoService.fetchSequence(this, protein)
-        launchDownloadDialog(reqId){ success ->
-            if(success){
+        launchDownloadDialog(reqId) { success ->
+            if (success) {
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.protein_detail_frag_container, ProteinDetailSequenceFragment.newInstance(protein))
                 ft.commit()
@@ -142,10 +143,10 @@ class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragmen
         }
     }
 
-    fun downloadAndSwitchToStructure(){
+    fun downloadAndSwitchToStructure() {
         val reqId = ProteinInfoService.fetchPDBFile(this, protein)
-        launchDownloadDialog(reqId){ success ->
-            if(success){
+        launchDownloadDialog(reqId) { success ->
+            if (success) {
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.protein_detail_frag_container, ProteinDetailStructureFragment.newInstance(protein))
                 ft.commit()
@@ -153,23 +154,23 @@ class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragmen
         }
     }
 
-    fun downloadAndSwitchToAR(model:ProteinModel){
+    fun downloadAndSwitchToAR(model: ProteinModel) {
         val reqId = ProteinInfoService.fetch3DModel(this, model)
-        launchDownloadDialog(reqId){ success ->
-            if(success){
-                val ft = supportFragmentManager.beginTransaction()
-                ft.replace(R.id.protein_detail_frag_container, ProteinDetailARFragment.newInstance(protein))
-                ft.commit()
+        launchDownloadDialog(reqId) { success ->
+            if (success) {
+                switchToArActivity()
             }
         }
     }
 
 
-    fun launchDownloadDialog(reqId:Long, afterDownload:((Boolean)->(Unit))){
-        class DownloadListener(var context: Context,
-                               var dialog: AlertDialog,
-                               var progressBar:ProgressBar,
-                               var statusTextView:TextView):
+    fun launchDownloadDialog(reqId: Long, afterDownload: ((Boolean) -> (Unit))) {
+        class DownloadListener(
+            var context: Context,
+            var dialog: AlertDialog,
+            var progressBar: ProgressBar,
+            var statusTextView: TextView
+        ) :
             DownloadMonitor.DownloadMonitorUpdateListener {
             override fun onSuccess() {
                 runOnUiThread {
@@ -196,6 +197,7 @@ class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragmen
             }
 
         }
+
         val builder = AlertDialog.Builder(this)
         val view = LayoutInflater.from(this).inflate(R.layout.download_dialog, null, false)
         val progressBar = view.download_progress_bar as ProgressBar

@@ -6,18 +6,16 @@ import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.ServerTimestamp
 
 data class ProteinModel(
-    var pdbID: String = "",
     var modelUrl: String = "",
     var status: String = ""
 ) {
-    @get:Exclude
-    var id: String = ""
+    @Exclude
+    var pdbID: String = ""
     @ServerTimestamp
-    var lastTouched: Timestamp? = null
+    var updateTime: Timestamp? = null
 
     companion object {
-        const val LAST_TOUCHED_KEY = "lastTouched"
-        const val PDBID_KEY = "pdbID"
+        const val UPDATE_TIME_KEY = "updateTime"
 
         const val STATUS_NEW = "new"
         const val STATUS_RENDERING = "rendering"
@@ -26,7 +24,7 @@ data class ProteinModel(
 
         fun fromSnapshot(snapshot: DocumentSnapshot): ProteinModel {
             val structure = snapshot.toObject(ProteinModel::class.java)!!
-            structure.id = snapshot.id
+            structure.pdbID = snapshot.id
             return structure
         }
 

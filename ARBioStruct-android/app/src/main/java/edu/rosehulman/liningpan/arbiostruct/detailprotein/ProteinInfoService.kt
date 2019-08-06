@@ -106,6 +106,18 @@ class ProteinInfoService {
                         Log.d(Constant.TAG, "seq $line")
                     }
                 }
+
+                var name = header.split('|')[0]
+                name = name.removePrefix(">")
+                var name_split = name.split(':')
+                result.add(
+                    Sequence(
+                        name_split[0],
+                        name_split[1],
+                        sequence
+                    )
+                )
+
                 Log.d(Constant.TAG, "$result")
                 return result
             } catch (e: Exception) {

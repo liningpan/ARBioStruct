@@ -35,4 +35,8 @@
     <string name="title_info">Information</string>
     <string name="title_seq">Sequence</string>
     <string name="title_structure">Structure</string>
+
+    <string name="title_activity_protein_ar">ProteinArActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

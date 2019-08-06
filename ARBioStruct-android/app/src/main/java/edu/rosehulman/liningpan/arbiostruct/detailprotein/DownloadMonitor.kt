@@ -39,7 +39,7 @@ class DownloadMonitor(val requestId: Long, val listener: DownloadMonitorUpdateLi
                     byteDownloaded,
                     byteTotal,
                     percent,
-                    "($str_byteDownloaded/$str_byteTotal)$percent%"
+                    "($str_byteDownloaded/$str_byteTotal)${"%.2f".format(percent)}%"
                 )
             } else {
                 Progress(
