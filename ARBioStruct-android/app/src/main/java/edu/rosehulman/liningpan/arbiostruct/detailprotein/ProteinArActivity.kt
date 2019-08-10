@@ -1,30 +1,30 @@
-
 package edu.rosehulman.liningpan.arbiostruct.detailprotein
 
-import android.app.ActivityManager;
-import android.content.Context;
-import android.os.Build;
-import android.os.Build.VERSION_CODES;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.widget.Toast;
-import com.google.ar.core.Anchor;
-import com.google.ar.core.HitResult;
-import com.google.ar.core.Plane;
-import com.google.ar.sceneform.AnchorNode;
-import com.google.ar.sceneform.rendering.ModelRenderable;
-import com.google.ar.sceneform.ux.ArFragment;
-import com.google.ar.sceneform.ux.TransformableNode;
-import androidx.core.content.ContextCompat.getSystemService
 import android.app.Activity
+import android.app.ActivityManager
+import android.content.Context
 import android.net.Uri
-import androidx.core.view.accessibility.AccessibilityRecordCompat.setSource
+import android.os.Build
+import android.os.Build.VERSION_CODES
+import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
+import android.view.MotionEvent
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.ar.core.HitResult
+import com.google.ar.core.Plane
+import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.assets.RenderableSource
+import com.google.ar.sceneform.rendering.ModelRenderable
+import com.google.ar.sceneform.ux.ArFragment
+import com.google.ar.sceneform.ux.TransformableNode
+import edu.rosehulman.liningpan.arbiostruct.Constant
 import edu.rosehulman.liningpan.arbiostruct.Protein
 import edu.rosehulman.liningpan.arbiostruct.R
 import java.io.File
+
+
 
 
 class ProteinArActivity : AppCompatActivity() {
@@ -32,6 +32,8 @@ class ProteinArActivity : AppCompatActivity() {
     private var arFragment: ArFragment? = null
     private var andyRenderable: ModelRenderable? = null
     private var protein: Protein? = null
+    //private val GLTF_ASSET = "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Duck/glTF/Duck.gltf"
+
 
     override// CompletableFuture requires api level 24
     // FutureReturnValueIgnored is not valid
@@ -57,8 +59,10 @@ class ProteinArActivity : AppCompatActivity() {
 
         // When you build a Renderable, Sceneform loads its resources in the background while returning
         // a CompletableFuture. Call thenAccept(), handle(), or check isDone() before calling get().
+        val file_location = File(this.getExternalFilesDir(null), protein!!.get3dModel())
         ModelRenderable.builder()
-            .setSource(this, Uri.fromFile(File(this.getExternalFilesDir(null), protein!!.getglTFFile())))
+            .setSource(this, Uri.fromFile(file_location))
+            .setRegistryId(file_location)
             .build()
             .thenAccept { renderable -> andyRenderable = renderable }
             .exceptionally { throwable ->
@@ -69,7 +73,9 @@ class ProteinArActivity : AppCompatActivity() {
             }
 
         arFragment!!.setOnTapArPlaneListener { hitResult: HitResult, plane: Plane, motionEvent: MotionEvent ->
+            Log.d(Constant.TAG, "tap on plane")
             if (andyRenderable == null) {
+
                 return@setOnTapArPlaneListener
             }
 

@@ -1,16 +1,13 @@
 package edu.rosehulman.liningpan.arbiostruct.detailprotein
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.rosehulman.liningpan.arbiostruct.Protein
-
 import edu.rosehulman.liningpan.arbiostruct.R
 
 
@@ -18,7 +15,7 @@ private const val ARG_PROTEIN = "arg_protein"
 
 class ProteinDetailSequenceFragment : Fragment() {
     private var protein: Protein? = null
-    private lateinit var adapter:SequenceChainListAdapter
+    private lateinit var adapter: SequenceChainListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

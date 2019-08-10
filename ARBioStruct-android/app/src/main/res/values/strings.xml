@@ -39,4 +39,5 @@
     <string name="title_activity_protein_ar">ProteinArActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="clear_cache">Clear cache</string>
 </resources>

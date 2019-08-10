@@ -2,10 +2,10 @@ package edu.rosehulman.liningpan.arbiostruct.detailprotein
 
 import android.os.Bundle
 import android.text.Html
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import edu.rosehulman.liningpan.arbiostruct.Protein
 import edu.rosehulman.liningpan.arbiostruct.R
 import kotlinx.android.synthetic.main.fragment_protein_detail_information.view.*

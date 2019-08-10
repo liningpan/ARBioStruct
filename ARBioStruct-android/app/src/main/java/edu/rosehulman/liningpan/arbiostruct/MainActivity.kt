@@ -109,6 +109,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.action_signout -> {
                 auth.signOut()
             }
+            R.id.action_clear_cache -> {
+                Util.deleteCacheDir(this)
+            }
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         drawerLayout.closeDrawer(GravityCompat.START)

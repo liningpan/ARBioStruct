@@ -7,6 +7,11 @@
             android:id="@+id/action_signout"
             android:icon="@drawable/ic_action_signout"
             android:title="@string/sign_out"/>
+    <item
+            android:id="@+id/action_clear_cache"
+            android:icon="@drawable/ic_action_clear_cache"
+            android:title="@string/clear_cache"
+    />
     <!--
         <group android:checkableBehavior="single">
             <item

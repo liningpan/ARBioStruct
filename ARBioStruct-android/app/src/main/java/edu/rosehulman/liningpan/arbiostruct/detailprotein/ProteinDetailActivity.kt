@@ -60,14 +60,22 @@ class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragmen
     }
 
     override fun onSwitchToARClicked() {
-        val modelFile = File(this.getExternalFilesDir(null), protein.getglTFFile())
+        val modelFile = File(this.getExternalFilesDir(null), protein.get3dModel())
         if (modelFile.exists()) {
             switchToArActivity()
         } else {
             modelRef
                 .document(protein.pdbID)
                 .get()
-                .addOnSuccessListener {documentSnapshot ->
+                .addOnSuccessListener { documentSnapshot ->
+                    if(documentSnapshot == null){
+                        AlertDialog.Builder(this)
+                            .setTitle("Sorry")
+                            .setMessage("This structure hasn't been processed by server")
+                            .create()
+                            .show()
+                        return@addOnSuccessListener
+                    }
                     val model = ProteinModel.fromSnapshot(documentSnapshot)
                     when (model.status) {
                         ProteinModel.STATUS_NEW, ProteinModel.STATUS_RENDERING, ProteinModel.STATUS_UPLOADING -> {
@@ -94,7 +102,7 @@ class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragmen
         }
     }
 
-    private fun switchToArActivity(){
+    private fun switchToArActivity() {
         val arIntent = Intent(this, ProteinArActivity::class.java)
         protein.putIntent(arIntent)
         startActivity(arIntent)

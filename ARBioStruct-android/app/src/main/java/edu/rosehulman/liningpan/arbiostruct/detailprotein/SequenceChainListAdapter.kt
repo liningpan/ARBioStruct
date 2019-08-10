@@ -4,26 +4,22 @@ import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import edu.rosehulman.liningpan.arbiostruct.Constant
 import edu.rosehulman.liningpan.arbiostruct.Protein
 import edu.rosehulman.liningpan.arbiostruct.R
-import kotlinx.android.synthetic.main.download_dialog.view.*
 import java.io.File
 
-class SequenceChainListAdapter(var context:Context, var protein: Protein):
-    RecyclerView.Adapter<SequenceChainViewHolder>()
-{
+class SequenceChainListAdapter(var context: Context, var protein: Protein) :
+    RecyclerView.Adapter<SequenceChainViewHolder>() {
 
     private var chainList = ArrayList<ProteinInfoService.Sequence>()
     private var fastaFile = File(context.getExternalFilesDir(null), protein.getFASTAFile())
 
-    init{
+    init {
         Log.d(Constant.TAG, fastaFile.toString())
-        if(fastaFile.exists()){
+        if (fastaFile.exists()) {
             readFastaFile()
         } else {
             val builder = AlertDialog.Builder(context)
@@ -33,7 +29,7 @@ class SequenceChainListAdapter(var context:Context, var protein: Protein):
         }
     }
 
-    fun readFastaFile(){
+    fun readFastaFile() {
         chainList = ProteinInfoService.readSequence(context, protein)!!
         notifyDataSetChanged()
     }

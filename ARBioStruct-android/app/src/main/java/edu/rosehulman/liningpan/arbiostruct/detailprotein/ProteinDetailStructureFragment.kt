@@ -2,12 +2,11 @@ package edu.rosehulman.liningpan.arbiostruct.detailprotein
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import edu.rosehulman.liningpan.arbiostruct.Protein
-
 import edu.rosehulman.liningpan.arbiostruct.R
 import kotlinx.android.synthetic.main.fragment_protein_detail_structure.view.*
 
@@ -37,12 +36,11 @@ class ProteinDetailStructureFragment : Fragment() {
         webView.settings.allowUniversalAccessFromFileURLs = true
         webView.loadUrl("file:///android_asset/jsmol/main.htm?dir=file://${context?.getExternalFilesDir(null)}/pdbfile&pdb=${protein?.pdbID}")
 
-        view.ar_full_screen_button.setOnClickListener{
+        view.ar_full_screen_button.setOnClickListener {
             listener?.onSwitchToARClicked()
         }
         return view
     }
-
 
 
     override fun onAttach(context: Context) {

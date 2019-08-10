@@ -3,8 +3,6 @@ package edu.rosehulman.liningpan.arbiostruct.detailprotein
 import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
-import android.text.Html
-import android.text.Spanned
 import android.util.Log
 import edu.rosehulman.liningpan.arbiostruct.Constant
 import edu.rosehulman.liningpan.arbiostruct.Protein
@@ -20,11 +18,12 @@ class ProteinInfoService {
         var enzClass: String
     ) {
         fun getFormatedDescription(): String = "<b>Description:</b> $description<br/>" +
-                        "<b>Length:</b> $length<br/>" +
-                        "<b>Weight:</b> $weight<br/>" +
-                        "<b>Chains</b> $chains<br/" +
-                        "<b>Enzyme Class</b> $enzClass"
+                "<b>Length:</b> $length<br/>" +
+                "<b>Weight:</b> $weight<br/>" +
+                "<b>Chains</b> $chains<br/" +
+                "<b>Enzyme Class</b> $enzClass"
     }
+
     data class Sequence(var pdbID: String, var chain: String, var seq: String)
 
     companion object {
@@ -50,30 +49,35 @@ class ProteinInfoService {
         }
 
         fun fetchPDBFile(context: Context, protein: Protein): Long {
-            return downloadWithManager(context,
+            return downloadWithManager(
+                context,
                 "https://files.rcsb.org/download/${protein.pdbID}.pdb",
-                protein.getPDBFile())
+                protein.getPDBFile()
+            )
         }
 
         fun fetchSequence(context: Context, protein: Protein): Long {
-            return downloadWithManager(context,
+            return downloadWithManager(
+                context,
                 "https://www.rcsb.org/pdb/download/downloadFastaFiles.do?structureIdList=${protein.pdbID}&compressionType=uncompressed",
-                    protein.getFASTAFile())
+                protein.getFASTAFile()
+            )
         }
 
-        fun fetch3DModel(context: Context, proteinModel:ProteinModel): Long {
-            return downloadWithManager(context,
+        fun fetch3DModel(context: Context, proteinModel: ProteinModel): Long {
+            return downloadWithManager(
+                context,
                 proteinModel.modelUrl,
-                proteinModel.getglTFFile())
+                proteinModel.get3dModel()
+            )
         }
 
-        fun downloadWithManager(context: Context, url:String, filename:String):Long{
+        fun downloadWithManager(context: Context, url: String, filename: String): Long {
             val request = DownloadManager.Request(Uri.parse(url))
                 .setDestinationInExternalFilesDir(context, null, filename)
             val manager: DownloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             return manager.enqueue(request)
         }
-
 
 
         fun readSequence(context: Context, protein: Protein): ArrayList<Sequence>? {

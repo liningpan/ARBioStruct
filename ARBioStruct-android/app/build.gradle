@@ -29,21 +29,10 @@ android {
     androidExtensions {
         experimental = true
     }
-    packagingOptions {
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/license.txt'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/notice.txt'
-        exclude 'META-INF/ASL2.0'
-        pickFirst 'log4j2.xml'
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
-        compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_8
-            targetCompatibility JavaVersion.VERSION_1_8
-        }
 }
 
 dependencies {
@@ -65,6 +54,8 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.11.0'
+
+    implementation 'com.google.ar.sceneform:assets:1.11.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
