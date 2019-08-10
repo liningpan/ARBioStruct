@@ -52,7 +52,7 @@ let proteinObserver = proteinQuery.onSnapshot(querySnapshot => {
 })
 function upload(doc, cb){
     modelQuery.doc(doc.id).update({status:'uploading'})
-    bucket.upload("workdir/"+doc.id+".gltf", function(err, file, apiResponse) {
+    bucket.upload("workdir/"+doc.id+".sfb", function(err, file, apiResponse) {
         if(err){
             throw err;
         }
@@ -69,13 +69,25 @@ function upload(doc, cb){
 }
 
 function convertglTF(doc, cb){
-    obj2gltf('workdir/'+doc.id+'.obj')
-        .then(function(gltf) {
-            const data = Buffer.from(JSON.stringify(gltf));
-            fs.writeFileSync('workdir/'+doc.id+'.gltf', data);
+    const options = {
+        binary : true
+    }
+    obj2gltf('workdir/'+doc.id+'.obj', options)
+        .then(function(glb) {
+            fs.writeFileSync('workdir/'+doc.id+'.glb', glb);
             console.log("PDB ID:", doc.id, "finish rendering")
             upload(doc, cb)
         });
+}
+
+function convertAsset(doc,cb){
+    exec("./google-ar-asset-converter/sceneform_sdk/linux/converter -a -d --mat ./google-ar-asset-converter/sceneform_sdk/default_materials/obj_material.sfm --outdir ./workdir/ ./workdir/" + doc.id + ".obj", (err, stdout, stderr) => {
+        if (err) {
+            return;
+        }
+        console.log("PDB ID:", doc.id, "finish rendering")
+        upload(doc, cb);
+    })
 }
 
 function renderPDB(doc, cb){
@@ -88,7 +100,7 @@ function renderPDB(doc, cb){
                     if (err) {
                         return;
                     }
-                    convertglTF(doc, cb)
+                    convertAsset(doc, cb)
                     console.log('stdout:', stdout);
                     console.log('stderr:', stderr);
                 });

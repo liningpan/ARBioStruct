@@ -565,5 +565,7 @@ color scale colors WBlk {1.0 1.0 1.0} {0.5 0.5 0.5} {0.0 0.0 0.0}
 }
 vmdrestoremycolors
 label textsize 1.0
+axes location off
 render Wavefront {{ output_filename }}
+
 exit
