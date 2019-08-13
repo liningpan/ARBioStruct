@@ -35,7 +35,7 @@ class SequenceChainListAdapter(var context: Context, var protein: Protein) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SequenceChainViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.sequence_chain_card_view, null, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.sequence_chain_card_view, parent, false)
         return SequenceChainViewHolder(view)
     }
 

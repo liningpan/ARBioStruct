@@ -7,45 +7,66 @@ import android.util.Log
 import edu.rosehulman.liningpan.arbiostruct.Constant
 import edu.rosehulman.liningpan.arbiostruct.Protein
 import edu.rosehulman.liningpan.arbiostruct.ProteinModel
+import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserFactory
 import java.io.File
+import java.io.ObjectInput
+import java.lang.StringBuilder
+import javax.xml.parsers.DocumentBuilderFactory
 
 class ProteinInfoService {
-    data class Description(
-        var description: String,
-        var length: Int,
-        var weight: Double,
-        var chains: ArrayList<Char>,
-        var enzClass: String
-    ) {
-        fun getFormatedDescription(): String = "<b>Description:</b> $description<br/>" +
-                "<b>Length:</b> $length<br/>" +
-                "<b>Weight:</b> $weight<br/>" +
-                "<b>Chains</b> $chains<br/" +
-                "<b>Enzyme Class</b> $enzClass"
-    }
 
     data class Sequence(var pdbID: String, var chain: String, var seq: String)
 
     companion object {
-        fun fetchPDBDescription(protein: Protein): String {
-            /*val description = RCSBDescriptionFactory.get(protein.pdbID)
-            val descArrayList = ArrayList<Description>()
-            for (poly in description.polymers) {
-                descArrayList.add(
-                    Description(
-                        poly.description,
-                        poly.length,
-                        poly.weight,
-                        ArrayList(poly.chains),
-                        poly.enzClass
-                    )
-                )
-//                print(poly.description)
-//                print(poly.length)
-//                print(poly.weight)
+        fun getXMLAttributes(parser: XmlPullParser): LinkedHashMap<String, String>{
+            val map = LinkedHashMap<String, String>()
+            for(i in 0 until parser.attributeCount){
+                Log.d(Constant.TAG, "attr: ${parser.getAttributeName(i)}, ${parser.getAttributeValue(i)}")
+                map[getUserFriendlyKeyName(parser.getAttributeName(i))] = parser.getAttributeValue(i)
             }
-            return descArrayList.joinToString (separator = "<br/>") { it.getFormatedDescription() }*/
-            return "Information Placeholder"
+            return map
+        }
+
+        val keyName = mapOf("structureId" to "Structure PDB ID",
+            "title" to "Title",
+            "pubmedId" to "PubMed ID",
+            "expMethod" to "Experimental method",
+            "resolution" to "Resolution",
+            "keywords" to "Keywords",
+            "nr_entities" to "Number of entities",
+            "nr_residues" to "Number of residues",
+            "nr_atoms" to "Number of atoms",
+            "deposition_date" to "Deposition date",
+            "release_date" to "Release date",
+            "last_modification_date" to "Last modification date",
+            "structure_authors" to "Structure authors",
+            "citation_authors" to "Citation authors",
+            "status" to "Status"
+            )
+        fun getUserFriendlyKeyName(key:String)= keyName.getOrDefault(key, key)
+        fun readPDBDescription(context:Context, protein: Protein): ArrayList<Map.Entry<String,String>> {
+            val parser = XmlPullParserFactory.newInstance().newPullParser()
+            parser.setInput(File(context.getExternalFilesDir(null), protein.getPDBXMLFile()).reader())
+
+            var event = parser.eventType
+            var attr : LinkedHashMap<String, String> ? = null
+            while(event != XmlPullParser.END_DOCUMENT){
+                if (event == XmlPullParser.START_TAG && parser.name == "PDB"){
+                    attr = getXMLAttributes(parser)
+                }
+                event = parser.next()
+            }
+
+            return attr?.toArrayList()?: ArrayList()
+        }
+
+        fun fetchPDBXMLFile(context: Context, protein: Protein): Long {
+            return downloadWithManager(
+                context,
+                "https://www.rcsb.org/pdb/rest/describePDB?structureId=${protein.pdbID}",
+                protein.getPDBXMLFile()
+            )
         }
 
         fun fetchPDBFile(context: Context, protein: Protein): Long {
@@ -130,4 +151,20 @@ class ProteinInfoService {
             return null
         }
     }
+}
+fun Map<String, Any>.toFormatedString() : String{
+    val builder = StringBuilder()
+    for(i in this){
+        builder.append("<b>${i.key}:</b><br/>${i.value}<br/>")
+    }
+    return builder.toString()
+}
+
+
+fun <K,V> Map<K, V>.toArrayList() : ArrayList<Map.Entry<K,V>> {
+    val arrayList =  ArrayList<Map.Entry<K,V>>()
+    for(i in this){
+        arrayList.add(i)
+    }
+    return arrayList
 }

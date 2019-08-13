@@ -3,7 +3,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context=".detailprotein.ProteinDetailSequenceFragment">
+             tools:context=".detailprotein.ProteinDetailSequenceFragment" android:padding="8dp">
 
 
 </androidx.recyclerview.widget.RecyclerView>

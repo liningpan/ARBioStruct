@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_protein_list.view.*
@@ -26,6 +27,10 @@ class ProteinListFragment : Fragment() {
         val recyclerView: RecyclerView = view.protein_recycler_view
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
+
+        val callback = ProteinItemTouchCallback(adapter)
+        val touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(recyclerView)
 
         view.fab.setOnClickListener {
             startAddEditActivity(null)
@@ -84,6 +89,34 @@ class ProteinListFragment : Fragment() {
     interface OnProteinItemSelectedListener {
 
         fun onProteinItemSelected(protein: Protein)
+    }
+
+    class ProteinItemTouchCallback(val touchAdapter:ItemTouchHelperAdapter): ItemTouchHelper.Callback(){
+
+        override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+            val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
+            val swipeFlags = ItemTouchHelper.START or ItemTouchHelper.END
+            return makeMovementFlags(dragFlags, swipeFlags)
+        }
+
+        override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+            touchAdapter.onItemMove(viewHolder.adapterPosition, target.adapterPosition)
+            return true
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            touchAdapter.onItemDismiss(viewHolder.adapterPosition)
+        }
+
+        override fun isLongPressDragEnabled() = false
+        override fun isItemViewSwipeEnabled() = true
+    }
+
+    interface ItemTouchHelperAdapter {
+
+        fun onItemMove(fromPosition: Int, toPosition: Int)
+
+        fun onItemDismiss(position: Int)
     }
 
 }

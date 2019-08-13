@@ -20,8 +20,10 @@ object Util {
         return dir.delete()
     }
     fun deleteCacheDir(context: Context){
-        for(i in arrayOf("pdbfile", "FASTA", "model")){
+        for(i in arrayOf("pdbfile", "FASTA", "model", "rcsbxml")){
             deleteDir(File(context.getExternalFilesDir(null), i))
         }
     }
+
+
 }

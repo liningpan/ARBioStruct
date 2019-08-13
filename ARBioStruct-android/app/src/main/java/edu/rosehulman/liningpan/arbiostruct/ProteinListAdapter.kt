@@ -12,7 +12,9 @@ class ProteinListAdapter(
     var context: Context?,
     var listener: ProteinListFragment.OnProteinItemSelectedListener?,
     var fragment: ProteinListFragment
-) : RecyclerView.Adapter<ProteinCardViewHolder>() {
+) : RecyclerView.Adapter<ProteinCardViewHolder>(), ProteinListFragment.ItemTouchHelperAdapter {
+
+
     var proteins = ArrayList<Protein>()
     var proteinRef = FirebaseFirestore
         .getInstance()
@@ -132,6 +134,14 @@ class ProteinListAdapter(
 
     fun editProtein(protein: Protein) {
         proteinRef.document(protein.id).set(protein)
+    }
+
+    override fun onItemMove(fromPosition: Int, toPosition: Int) {
+        //Not used
+    }
+
+    override fun onItemDismiss(position: Int) {
+        proteinRef.document(proteins[position].id).delete()
     }
 
 

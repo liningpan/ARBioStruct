@@ -67,10 +67,10 @@ data class Protein(
     fun getPDBFile() = "/pdbfile/${pdbID}.pdb"
 
     @Exclude
-    fun getFASTAFile() = "/FASTA/${pdbID}.fasta"
+    fun getPDBXMLFile() = "/rcsbxml/${pdbID}.xml"
 
-    /*@Exclude
-    fun getglTFFile() = "/glTF/${pdbID}.gltf"*/
+    @Exclude
+    fun getFASTAFile() = "/FASTA/${pdbID}.fasta"
 
     @Exclude
     fun get3dModel() = "/model/${pdbID}.sfb"

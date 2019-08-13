@@ -30,8 +30,6 @@ data class ProteinModel(
 
     }
 
-    /*@Exclude
-    fun getglTFFile() = "/glTF/${pdbID}.gltf"*/
     @Exclude
     fun get3dModel() = "/model/${pdbID}.sfb"
 }

@@ -32,7 +32,12 @@ class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragmen
         var fragment: Fragment? = null
         when (item.itemId) {
             R.id.navigation_information -> {
-                fragment = ProteinDetailInformationFragment.newInstance(protein)
+                val infoFile = File(this.getExternalFilesDir(null), protein.getPDBXMLFile())
+                if(infoFile.exists()) {
+                    fragment = ProteinDetailInformationFragment.newInstance(protein)
+                } else {
+                    downloadAndSwitchToInfo()
+                }
             }
             R.id.navigation_sequence -> {
                 val fastaFile = File(this.getExternalFilesDir(null), protein.getFASTAFile())
@@ -122,19 +127,24 @@ class ProteinDetailActivity : AppCompatActivity(), ProteinDetailStructureFragmen
         supportActionBar?.title = protein.name
 
         if (savedInstanceState == null) {
-            val ft = supportFragmentManager.beginTransaction()
-            ft.replace(R.id.protein_detail_frag_container, ProteinDetailInformationFragment.newInstance(protein))
-            ft.commit()
+            val infoFile = File(this.getExternalFilesDir(null), protein.getPDBXMLFile())
+            if(infoFile.exists()) {
+                val ft = supportFragmentManager.beginTransaction()
+                ft.replace(R.id.protein_detail_frag_container, ProteinDetailInformationFragment.newInstance(protein))
+                ft.commit()
+            } else {
+                downloadAndSwitchToInfo()
+            }
         }
     }
 
 
     fun downloadAndSwitchToInfo() {
-        val reqId = ProteinInfoService.fetchSequence(this, protein)
+        val reqId = ProteinInfoService.fetchPDBXMLFile(this, protein)
         launchDownloadDialog(reqId) { success ->
             if (success) {
                 val ft = supportFragmentManager.beginTransaction()
-                ft.replace(R.id.protein_detail_frag_container, ProteinDetailSequenceFragment.newInstance(protein))
+                ft.replace(R.id.protein_detail_frag_container, ProteinDetailInformationFragment.newInstance(protein))
                 ft.commit()
             }
         }
